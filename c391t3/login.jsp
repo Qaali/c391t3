@@ -29,7 +29,7 @@
 			        conn = DriverManager.getConnection(dbstring, dbUser, dbPass);
 	        	}
 	        	else
-			        conn = DriverManager.getConnection(dbstring,"cwark","lotr0808pso");
+			        conn = DriverManager.getConnection(dbstring,"cwarkent","lotr0808pso");
         		conn.setAutoCommit(false);
         	}
 	        catch(Exception ex){

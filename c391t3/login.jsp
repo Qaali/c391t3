@@ -23,7 +23,13 @@
         		Class drvClass = Class.forName(driverName); 
 	        	DriverManager.registerDriver((Driver) drvClass.newInstance());
 	        	//establish the connection 
-		        conn = DriverManager.getConnection(dbstring,"cwarkent","lotr0808pso");
+	        	if(request.getParameter("checkdb") != null){
+	        		String dbUser = (request.getParameter("DBUSER")).trim();
+	        		String dbPass = (request.getParameter("DBPASS")).trim();
+			        conn = DriverManager.getConnection(dbstring, dbUser, dbPass);
+	        	}
+	        	else
+			        conn = DriverManager.getConnection(dbstring,"cwark","lotr0808pso");
         		conn.setAutoCommit(false);
         	}
 	        catch(Exception ex){
@@ -57,6 +63,12 @@
 	        	success = true;
 	        	session.setAttribute("name", userName);
 	        	session.setAttribute("classtype", type);
+	        	if(request.getParameter("checkdb") != null){
+	        		String dbUser = (request.getParameter("DBUSER")).trim();
+	        		String dbPass = (request.getParameter("DBPASS")).trim();
+	        		session.setAttribute("dbuser", dbUser);
+	        		session.setAttribute("dbpass", dbPass);
+	        	}
 		        response.sendRedirect("main.jsp");
 	        }
         	else
@@ -98,6 +110,18 @@
 	<TR VALIGN=TOP ALIGN=LEFT>
 		<TH>Password:</TH>
 		<TD><INPUT TYPE="password" NAME="PASSWD"></TD>
+	</TR>
+</TABLE>
+
+<BR><P>Use a different Database <INPUT TYPE="checkbox" NAME="checkdb" VALUE="yes"></P>
+<TABLE>
+	<TR VALIGN=TOP ALIGN=LEFT>
+		<TH>UserName:</TH>
+		<TD><INPUT TYPE="text" NAME="DBUSER"></TD>
+	</TR>
+	<TR VALIGN=TOP ALIGN=LEFT>
+		<TH>Password:</TH>
+		<TD><INPUT TYPE="password" NAME="DBPASS"></TD>
 	</TR>
 </TABLE>
 

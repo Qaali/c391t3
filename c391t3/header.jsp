@@ -3,38 +3,49 @@
 	<HEAD>
 		<TITLE>CMPUT 391 Team 3 <%= title %></TITLE>
 		<META HTTP-EQUIV="Content-Type" CONTENT="text/html; charset=utf-8">
-		<style type="text/css">
+		<style type="text/css">		
+		#header {
+			border-bottom: 1px solid black;
+			margin-bottom: 0px;
+			padding-bottom: 0px;
+			float: top;
+		}
+		
+		#header p{
+			margin:2px;
+		}
+		
 		#sidebar {
 			float: left; 
 			width:200px;
-			margin-top:0px;
+			margin-top:10px;
 			padding-top:0px;
-			height:100%;
+			border-right: 1px solid black;
 		}
 		
 		#main {
+			margin-top: 10px;
 			margin-left: 200px;
-			border-left: 1px solid black;
 			padding-left: 30px;
 		}
 		</style>
 	</HEAD>
 
 	<BODY>
-		<div style="float:top">
+		<div id="header">
 			<h1 style="text-align:center">CMPUT 391 Team 3 <%= title %></h1>
 		
 			<% 
 				if(session.getAttribute("name") != null){
-					out.println("<p style=\"text-align:right\">Hello, "+session.getAttribute("name"));
-					out.println("<a href=\"login.jsp?logout=true\">logout</a></p>");
+					out.println("<p style=\"text-align:right\">Hello, "+session.getAttribute("name")+". ");
+					out.println("<a href=\"login.jsp?logout=true\">Logout</a></p>");
 				}
 				else{
 					out.println("<p style=\"text-align:right\">Please ");
 					out.println("<a href=\"login.jsp\">Login</a><p>");
 				}
 			%>
-		<div>
+		</div>
 		<div id="sidebar">
 			<b><u>Menu</u></b><br>
 		<%

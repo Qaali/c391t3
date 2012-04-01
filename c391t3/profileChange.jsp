@@ -24,6 +24,7 @@
         	out.println("<hr>" + ex.getMessage() + "<hr>");
     	}
 
+    	String userName = (String) session.getAttribute("name");
 		String fname = request.getParameter("firstname");
 		String lname = request.getParameter("lastname");
 		String addr = request.getParameter("address");
@@ -31,14 +32,21 @@
 		String phone = request.getParameter("phone");
     	
     	//select the user table from the underlying db and update persons
-		Statement stmt = null;
+		PreparedStatement stmt = null;
     	ResultSet rset = null;
-		String sql = "update persons set first_name = '"+fname+"', last_name = '"+lname+"', address = '"+addr+
-					 "', email = '"+email+"', phone = '"+phone+"' where user_name = '"+session.getAttribute("name")+"'";
-		out.println(sql+"<BR>");
+		String sql = "update persons set first_name = ?, last_name = ?, address = ?,"+
+					 " email = ?, phone = ? where user_name = ? ";
 		try{
-    		stmt = conn.createStatement();
-        	rset = stmt.executeQuery(sql);
+			stmt = conn.prepareStatement(sql);
+    		stmt.setString(1, fname);
+    		stmt.setString(2, lname);
+    		stmt.setString(3, addr);
+    		stmt.setString(4, email);
+    		stmt.setString(5, phone);
+    		stmt.setString(6, userName);
+	        stmt.executeUpdate();
+	        conn.commit();
+	        out.println("<p>Edit Success!</p>");
 		}
     	catch(Exception ex){
         	out.println("<hr>" + ex.getMessage() + "<hr>");
@@ -47,11 +55,11 @@
     	if(request.getParameter("checkpass") != null){
     		String oldpass = request.getParameter("oldpass");
     		String newpass = request.getParameter("newpass");
-    		sql = "select password from users where user_name = '"+session.getAttribute("name")+"'";
-			out.println(sql+"<BR>");
+    		sql = "select password from users where user_name = ? ";
 			try{
-				stmt = conn.createStatement();
-				rset = stmt.executeQuery(sql);
+				stmt = conn.prepareStatement(sql);
+				stmt.setString(1, userName);
+				rset = stmt.executeQuery();
 			}
 			catch(Exception ex){
 				out.println("<hr>" + ex.getMessage() + "<hr>");
@@ -61,15 +69,21 @@
 			while(rset != null && rset.next())
 		   		truepwd = (rset.getString(1)).trim();
 			if(oldpass.equals(truepwd)){
-				sql = "update users set password = '"+newpass+"' where user_name = '"+session.getAttribute("name")+"'";
-				out.println(sql+"<BR>");
+				sql = "update users set password = ? where user_name = ? ";
 				try{
-					stmt = conn.createStatement();
-					rset = stmt.executeQuery(sql);
+					stmt = conn.prepareStatement(sql);
+					stmt.setString(1, newpass);
+					stmt.setString(2, userName);
+					stmt.executeUpdate();
+					conn.commit();
+					out.println("<p>Password Change Successful!</p>");
 				}
 				catch(Exception ex){
 					out.println("<hr>" + ex.getMessage() + "<hr>");
 				}
+			}
+			else {
+				out.println("<p>Old Password Incorrect.</p>");
 			}
     	}
 		
@@ -80,8 +94,10 @@
        		out.println("<hr>" + ex.getMessage() + "<hr>");
         }
 	}
+	else{
+		out.println("You are not signed in.");
+	}
 %>
-		<P>Edit Success</P>
 		</div>
 	</BODY>
 </HTML>

@@ -4,7 +4,7 @@
 <%@ include file="header.jsp" %>
 
 		<div id="main">
-		Welcome to the radiology database.
+		Welcome to the radiology database.<br>
 		</div>
 	</BODY>
 </HTML>

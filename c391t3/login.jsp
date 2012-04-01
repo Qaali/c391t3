@@ -32,13 +32,13 @@
 
 
 	        //select the user table from the underlying db and validate the user name and password
-        	Statement stmt = null;
+        	PreparedStatement stmt = null;
 	        ResultSet rset = null;
-        	String sql = "select password, class from users where user_name = '"+userName+"'";
-	        //out.println(sql);
+        	String sql = "select password, class from users where user_name = ? ";
         	try{
-	        	stmt = conn.createStatement();
-		        rset = stmt.executeQuery(sql);
+        		stmt = conn.prepareStatement(sql);
+        		stmt.setString(1, userName);
+		        rset = stmt.executeQuery();
         	}
 	        catch(Exception ex){
 		        out.println("<hr>" + ex.getMessage() + "<hr>");

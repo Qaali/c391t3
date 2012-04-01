@@ -3,6 +3,7 @@
 	String title = "Edit Profile";
 %>
 <%@ include file="header.jsp" %>
+		<div id="main">
 <%
 
 	String firstName = "";
@@ -32,12 +33,14 @@
 
 
     	//select the user table from the underlying db and validate the user name and password
-		Statement stmt = null;
+    	String userName = (String) session.getAttribute("name");
+		PreparedStatement stmt = null;
     	ResultSet rset = null;
-		String sql = "select * from persons where user_name = '"+session.getAttribute("name")+"'";
+		String sql = "select * from persons where user_name = ? ";
 		try{
-    		stmt = conn.createStatement();
-        	rset = stmt.executeQuery(sql);
+			stmt = conn.prepareStatement(sql);
+    		stmt.setString(1, userName);
+	        rset = stmt.executeQuery();
 		}
     	catch(Exception ex){
         	out.println("<hr>" + ex.getMessage() + "<hr>");
@@ -59,9 +62,7 @@
         catch(Exception ex){
        		out.println("<hr>" + ex.getMessage() + "<hr>");
         }
-	}
 %>
-		<div id="main">
 		<P>Edit your profile below</P>
 		
 		<FORM NAME="ProfileForm" ACTION="profileChange.jsp" METHOD="post" >
@@ -100,7 +101,13 @@
 		</TABLE>
 
 		<INPUT TYPE="submit" NAME="pSubmit" VALUE="Submit">
-		</FORM>
+		</FORM>		
+<%
+	}
+	else {
+		out.println("You are not signed in.");
+	}
+%>
 		</div>
 	</BODY>
 </HTML>

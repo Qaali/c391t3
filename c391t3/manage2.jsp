@@ -11,9 +11,12 @@
 	String email = "";
 	String phone = "";
 	String classname = "";
-	Date date;
+	String password = "";
+	String date = "";
+	String[] list;
+	list = new String[32];
 	
-	if(session.getAttribute("name") != null){
+	if((session.getAttribute("name") != null)&&(session.getAttribute("classtype").equals("a"))){
     	//establish the connection to the underlying database
 		Connection conn = null;
 
@@ -66,40 +69,53 @@
 		}
     	
     	while(rset != null && rset.next()){
+    		password = (rset.getString(2)).trim();
     		classname = (rset.getString(3)).trim();
+    		date = (rset.getString(4)).trim();
     		//date = (rset.getDate(4));
     	}
     	
-    	String sql3;
-		if(classname=='d'){
+    	String sql3 = "";
+		if(classname.equals("d")){
     		sql3 = "select * from family_doctor where doctor_name = '"+usrName+"'";
-		}else if(classname=='p'){
+		}else if(classname.equals("p")){
 			sql3 = "select * from family_doctor where patient_name = '"+usrName+"'";
 		}
 		
-		try{
-    		stmt = conn.createStatement();
-        	rset = stmt.executeQuery(sql3);
+		if(!(sql3.equals(""))){
+			try{
+	    		stmt = conn.createStatement();
+	        	rset = stmt.executeQuery(sql3);
+			}
+	    	catch(Exception ex){
+	        	out.println("<hr>" + ex.getMessage() + "<hr>");
+			}
+	    	if(classname.equals("d")){
+	    		int i = 0;
+		    	while(rset != null && rset.next()){
+		    		list[i] = (rset.getString(2)).trim();
+		    		i++;
+		    	}
+	    	}else{
+	    	}
+	    	int i = 0;
+	    	while(list[i] != null){
+	    	    out.println("<h3>"+list[i]+"</h3>");
+	    		i++;
+	    	}
+			try{
+	        	conn.close();
+	     	}
+	        catch(Exception ex){
+	       		out.println("<hr>" + ex.getMessage() + "<hr>");
+	        }
 		}
-    	catch(Exception ex){
-        	out.println("<hr>" + ex.getMessage() + "<hr>");
-		}
-    	
-    	while(rset != null && rset.next()){
-    		classname = (rset.getString(3)).trim();
-    		//date = (rset.getDate(4));
-    	}
-    	
-		try{
-        	conn.close();
-     	}
-        catch(Exception ex){
-       		out.println("<hr>" + ex.getMessage() + "<hr>");
-        }
+	}else{
+		out.println("<h3>Please log in as Administor.</h3>");
 	}
 %>
 		<div id="main">
-		<P>Edit your profile below</P>
+		<P>Edit user info below</P>
 		
 		<FORM NAME="ProfileForm" ACTION="profileChange.jsp" METHOD="post" >
 		<TABLE>
@@ -128,15 +144,12 @@
 				<TD><INPUT TYPE="text" NAME="classname" VALUE="<%= classname%>"></TD>
 			</TR>
 			<TR VALIGN=TOP ALIGN=LEFT>
-				<TH COLSPAN=2>Change Password <INPUT TYPE="checkbox" NAME="checkpass" VALUE="yes"></TH>
+				<TH>Password:</TH>
+				<TD><INPUT TYPE="text" NAME="password" VALUE="<%= password%>"></TD>
 			</TR>
 			<TR VALIGN=TOP ALIGN=LEFT>
-				<TH>Old Password:</TH>
-				<TD><INPUT TYPE="password" NAME="oldpass"></TD>
-			</TR>
-			<TR VALIGN=TOP ALIGN=LEFT>
-				<TH>New Password:</TH>
-				<TD><INPUT TYPE="password" NAME="newpass"></TD>
+				<TH>Registered Date:</TH>
+				<TD><%= date%></TD>
 			</TR>
 		</TABLE>
 

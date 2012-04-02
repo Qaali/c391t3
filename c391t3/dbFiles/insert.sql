@@ -9,4 +9,6 @@ insert into persons values('doc', 'Doc', '', 'somewhere', 'me@mac.com', '7800000
 
 insert into users values('rad', 'radpass', 'r', '03-MAR-12');
 insert into persons values('rad', 'Rad', '', 'somewhere', 'me@mac.com', '780000001');
+
+insert into family_doctor values('doc','pat');
 commit;

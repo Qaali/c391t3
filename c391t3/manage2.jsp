@@ -79,7 +79,7 @@
 		<div id="main">
 		<P>Edit user info below</P>
 		
-		<FORM NAME="ProfileForm" ACTION="profileChange.jsp" METHOD="post" >
+		<FORM NAME="ProfileForm" ACTION="manage_change.jsp" METHOD="post" >
 		<TABLE>
 			<TR VALIGN=TOP ALIGN=LEFT>
 				<TH>First Name:</TH>
@@ -113,6 +113,10 @@
 				<TH>Registered Date:</TH>
 				<TD><%= date%></TD>
 			</TR>
+		</TABLE>
+		<INPUT TYPE=hidden NAME=usrName VALUE="<%= usrName%>">
+		<INPUT TYPE="submit" NAME="pSubmit" VALUE="Submit">
+		</FORM>
     	<%
     	String sql3 = "";
 		if(classname.equals("d")){
@@ -130,14 +134,20 @@
 	        	out.println("<hr>" + ex.getMessage() + "<hr>");
 			}
 	    	if(classname.equals("d")){
+	    		out.println("<h3>Here are the patients list:</h3>");
 		    	while(rset != null && rset.next()){
 		    		list[size] = (rset.getString(2)).trim();
 		    		size++;
 		    	}
 	    	}else{
+	    		out.println("<h3>Here are the familiy_doctor list:</h3>");
+		    	while(rset != null && rset.next()){
+		    		list[size] = (rset.getString(1)).trim();
+		    		size++;
+		    	}
 	    	}
 	    	for(int i=0;i<size;i++){
-	    	    out.println("<h3>"+list[i]+"</h3>");
+	    	    out.println("<p>"+list[i]+"</p>");
 	    	}
 			try{
 	        	conn.close();
@@ -145,15 +155,26 @@
 	        catch(Exception ex){
 	       		out.println("<hr>" + ex.getMessage() + "<hr>");
 	        }
+	        if(classname.equals("d")){
+	        	%>
+	        	<FORM NAME="ProfileForm" ACTION="profileChange.jsp" METHOD="post" >
+	        	<INPUT TYPE="text" NAME="patient_name">
+	        	<INPUT TYPE="submit" NAME="pSubmit" VALUE="add patient">
+	        	</FORM>
+	        	<%
+	        }else{
+	        	%>
+	        	<FORM NAME="ProfileForm" ACTION="profileChange.jsp" METHOD="post" >
+	        	<INPUT TYPE="text" NAME="doctor_name">
+	        	<INPUT TYPE="submit" NAME="pSubmit" VALUE="add doctor">
+	        	</FORM>
+	        	<%
+	        }
 		}
 	}else{
 		out.println("<h3>Please log in as Administor.</h3>");
 	}
 %>
-		</TABLE>
-
-		<INPUT TYPE="submit" NAME="pSubmit" VALUE="Submit">
-		</FORM>
 		</div>
 	</BODY>
 </HTML>

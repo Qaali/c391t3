@@ -46,16 +46,17 @@
     	String truepwd = "";
 
     	out.println("<h3>Here are the persons listed:</h3>");
+    	out.println("<TABLE>");
 		while(rset != null && rset.next()){
 			usrName = (rset.getString(1)).trim();
-			out.println("<html>");
+			out.println("<TR VALIGN=TOP ALIGN=LEFT><TH>");
 			out.println("<form method=get action=manage2.jsp>");
 			out.println(usrName+"<input type=hidden name=name value="+usrName+">");
 			out.println("<input type=submit value=view>");
 			out.println("</form>");
-			out.println("</html>");
+			out.println("</TH></TR>");
 		}
-		
+		out.println("</TABLE>");
 		try{
         	conn.close();
      	}

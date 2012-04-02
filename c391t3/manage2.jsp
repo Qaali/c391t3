@@ -15,6 +15,7 @@
 	String date = "";
 	String[] list;
 	list = new String[32];
+	int size = 0;
 	
 	if((session.getAttribute("name") != null)&&(session.getAttribute("classtype").equals("a"))){
     	//establish the connection to the underlying database
@@ -74,46 +75,7 @@
     		date = (rset.getString(4)).trim();
     		//date = (rset.getDate(4));
     	}
-    	
-    	String sql3 = "";
-		if(classname.equals("d")){
-    		sql3 = "select * from family_doctor where doctor_name = '"+usrName+"'";
-		}else if(classname.equals("p")){
-			sql3 = "select * from family_doctor where patient_name = '"+usrName+"'";
-		}
-		
-		if(!(sql3.equals(""))){
-			try{
-	    		stmt = conn.createStatement();
-	        	rset = stmt.executeQuery(sql3);
-			}
-	    	catch(Exception ex){
-	        	out.println("<hr>" + ex.getMessage() + "<hr>");
-			}
-	    	if(classname.equals("d")){
-	    		int i = 0;
-		    	while(rset != null && rset.next()){
-		    		list[i] = (rset.getString(2)).trim();
-		    		i++;
-		    	}
-	    	}else{
-	    	}
-	    	int i = 0;
-	    	while(list[i] != null){
-	    	    out.println("<h3>"+list[i]+"</h3>");
-	    		i++;
-	    	}
-			try{
-	        	conn.close();
-	     	}
-	        catch(Exception ex){
-	       		out.println("<hr>" + ex.getMessage() + "<hr>");
-	        }
-		}
-	}else{
-		out.println("<h3>Please log in as Administor.</h3>");
-	}
-%>
+    	%>
 		<div id="main">
 		<P>Edit user info below</P>
 		
@@ -151,6 +113,43 @@
 				<TH>Registered Date:</TH>
 				<TD><%= date%></TD>
 			</TR>
+    	<%
+    	String sql3 = "";
+		if(classname.equals("d")){
+    		sql3 = "select * from family_doctor where doctor_name = '"+usrName+"'";
+		}else if(classname.equals("p")){
+			sql3 = "select * from family_doctor where patient_name = '"+usrName+"'";
+		}
+		
+		if(!(sql3.equals(""))){
+			try{
+	    		stmt = conn.createStatement();
+	        	rset = stmt.executeQuery(sql3);
+			}
+	    	catch(Exception ex){
+	        	out.println("<hr>" + ex.getMessage() + "<hr>");
+			}
+	    	if(classname.equals("d")){
+		    	while(rset != null && rset.next()){
+		    		list[size] = (rset.getString(2)).trim();
+		    		size++;
+		    	}
+	    	}else{
+	    	}
+	    	for(int i=0;i<size;i++){
+	    	    out.println("<h3>"+list[i]+"</h3>");
+	    	}
+			try{
+	        	conn.close();
+	     	}
+	        catch(Exception ex){
+	       		out.println("<hr>" + ex.getMessage() + "<hr>");
+	        }
+		}
+	}else{
+		out.println("<h3>Please log in as Administor.</h3>");
+	}
+%>
 		</TABLE>
 
 		<INPUT TYPE="submit" NAME="pSubmit" VALUE="Submit">

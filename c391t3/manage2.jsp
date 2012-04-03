@@ -192,7 +192,7 @@
 	        	<FORM NAME="ProfileForm" ACTION="manage_add.jsp" METHOD="post" >
 	        	<INPUT TYPE="text" NAME="patient_name">
 	        	<INPUT TYPE=hidden NAME=doctor_name VALUE="<%= usrName%>">
-	        	<INPUT TYPE=hidden NAME=classname VALUE="<%= classname%>">
+	        	<INPUT TYPE=hidden NAME=class VALUE="<%= classname%>">
 	        	<INPUT TYPE="submit" NAME="pSubmit" VALUE="add patient">
 	        	</FORM>
 	        	<%
@@ -201,7 +201,7 @@
 	        	<FORM NAME="ProfileForm" ACTION="manage_add.jsp" METHOD="post" >
 	        	<INPUT TYPE="text" NAME="doctor_name">
 	        	<INPUT TYPE=hidden NAME=patient_name VALUE="<%= usrName%>">
-	        	<INPUT TYPE=hidden NAME=classname VALUE="<%= classname%>">
+	        	<INPUT TYPE=hidden NAME=class VALUE="<%= classname%>">
 	        	<INPUT TYPE="submit" NAME="pSubmit" VALUE="add doctor">
 	        	</FORM>
 	        	<%

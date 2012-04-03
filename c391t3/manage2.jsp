@@ -29,7 +29,13 @@
 			Class drvClass = Class.forName(driverName); 
     		DriverManager.registerDriver((Driver) drvClass.newInstance());
     		//establish the connection 
-        	conn = DriverManager.getConnection(dbstring,"yiming7","a2188601Z");
+    		if(session.getAttribute("dbuser") != null){
+    			String dbUser = (String) session.getAttribute("dbuser");
+    			String dbPass = (String) session.getAttribute("dbpass");
+    			conn = DriverManager.getConnection(dbstring, dbUser, dbPass);
+    		}
+    		else
+        		conn = DriverManager.getConnection(dbstring,"cwarkent","lotr0808pso");
 			conn.setAutoCommit(false);
 		}
     	catch(Exception ex){
@@ -115,7 +121,7 @@
 			</TR>
 		</TABLE>
 		<INPUT TYPE=hidden NAME=usrName VALUE="<%= usrName%>">
-		<INPUT TYPE="submit" NAME="pSubmit" VALUE="Submit">
+		<INPUT TYPE="submit" NAME="pSubmit" VALUE="Edit">
 		</FORM>
     	<%
     	String sql3 = "";
@@ -134,12 +140,18 @@
 	        	out.println("<hr>" + ex.getMessage() + "<hr>");
 			}
 	    	if(classname.equals("d")){
+	    		%>
+	    		<FORM NAME="DeleteForm" ACTION="manage_del.jsp" METHOD="post" >
+	    		<%
 	    		out.println("<h3>Here are the patients list:</h3>");
 		    	while(rset != null && rset.next()){
 		    		list[size] = (rset.getString(2)).trim();
 		    		size++;
 		    	}
 	    	}else{
+	    		%>
+	    		<FORM NAME="DeleteForm" ACTION="manage_del.jsp" METHOD="post" >
+	    		<%
 	    		out.println("<h3>Here are the familiy_doctor list:</h3>");
 		    	while(rset != null && rset.next()){
 		    		list[size] = (rset.getString(1)).trim();
@@ -147,8 +159,28 @@
 		    	}
 	    	}
 	    	for(int i=0;i<size;i++){
-	    	    out.println("<p>"+list[i]+"</p>");
+	    	    out.println("<p>"+list[i]);
+	    	    if(classname.equals("d")){
+		    	    %>
+		    		<INPUT TYPE=hidden NAME=doctor_name VALUE="<%= usrName%>">
+		    		<INPUT TYPE=hidden NAME=patient_name VALUE="<%= list[i]%>">
+		    		<INPUT TYPE=hidden NAME=class VALUE="<%=classname%>">
+		    		<INPUT TYPE="submit" NAME="pSubmit" VALUE="Delete">
+		    		</p>
+		    		<%
+	    	    }else{
+		    	    %>
+		    		<INPUT TYPE=hidden NAME=doctor_name VALUE="<%= list[i]%>">
+		    		<INPUT TYPE=hidden NAME=patient_name VALUE="<%= usrName%>">
+		    		<INPUT TYPE=hidden NAME=class VALUE="<%=classname%>">
+		    		<INPUT TYPE="submit" NAME="pSubmit" VALUE="Delete">
+		    		</p>	
+		    		<%    	    	
+	    	    }
 	    	}
+	    	%>
+	    	</FORM>
+	    	<%
 			try{
 	        	conn.close();
 	     	}
@@ -157,15 +189,19 @@
 	        }
 	        if(classname.equals("d")){
 	        	%>
-	        	<FORM NAME="ProfileForm" ACTION="profileChange.jsp" METHOD="post" >
+	        	<FORM NAME="ProfileForm" ACTION="manage_add.jsp" METHOD="post" >
 	        	<INPUT TYPE="text" NAME="patient_name">
+	        	<INPUT TYPE=hidden NAME=doctor_name VALUE="<%= usrName%>">
+	        	<INPUT TYPE=hidden NAME=classname VALUE="<%= classname%>">
 	        	<INPUT TYPE="submit" NAME="pSubmit" VALUE="add patient">
 	        	</FORM>
 	        	<%
 	        }else{
 	        	%>
-	        	<FORM NAME="ProfileForm" ACTION="profileChange.jsp" METHOD="post" >
+	        	<FORM NAME="ProfileForm" ACTION="manage_add.jsp" METHOD="post" >
 	        	<INPUT TYPE="text" NAME="doctor_name">
+	        	<INPUT TYPE=hidden NAME=patient_name VALUE="<%= usrName%>">
+	        	<INPUT TYPE=hidden NAME=classname VALUE="<%= classname%>">
 	        	<INPUT TYPE="submit" NAME="pSubmit" VALUE="add doctor">
 	        	</FORM>
 	        	<%

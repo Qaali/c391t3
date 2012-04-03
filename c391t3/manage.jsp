@@ -23,7 +23,13 @@
 			Class drvClass = Class.forName(driverName); 
     		DriverManager.registerDriver((Driver) drvClass.newInstance());
     		//establish the connection 
-        	conn = DriverManager.getConnection(dbstring,"yiming7","a2188601Z");
+    		if(session.getAttribute("dbuser") != null){
+    			String dbUser = (String) session.getAttribute("dbuser");
+    			String dbPass = (String) session.getAttribute("dbpass");
+    			conn = DriverManager.getConnection(dbstring, dbUser, dbPass);
+    		}
+    		else
+        		conn = DriverManager.getConnection(dbstring,"cwarkent","lotr0808pso");
 			conn.setAutoCommit(false);
 		}
     	catch(Exception ex){

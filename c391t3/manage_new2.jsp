@@ -70,12 +70,12 @@
 		sql = "insert into persons values(?, ?, ?, ?, ?, ?)";
 		try{
 			stmt = conn.prepareStatement(sql);
-    		stmt.setString(1, fname);
-    		stmt.setString(2, lname);
-    		stmt.setString(3, addr);
-    		stmt.setString(4, email);
-    		stmt.setString(5, phone);
-    		stmt.setString(6, userName);
+    		stmt.setString(1, userName);
+    		stmt.setString(2, fname);
+    		stmt.setString(3, lname);
+    		stmt.setString(4, addr);
+    		stmt.setString(5, email);
+    		stmt.setString(6, phone);
 	        stmt.executeUpdate();
 	        conn.commit();
 	        out.println("<p>Edit Success!</p>");
@@ -84,7 +84,10 @@
         	out.println("<hr>" + ex.getMessage() + "<hr>");
 		}
     	
-
+		out.println("<form method=get action=manage.jsp>");
+		out.println("<input type=submit value=Return>");
+		out.println("</form>");
+		
 		try{
         	conn.close();
      	}

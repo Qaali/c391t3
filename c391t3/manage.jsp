@@ -50,7 +50,15 @@
 		}
 
     	String truepwd = "";
-
+    	out.println("<p3><b>Click to add a new user:<b></p3>");
+		out.println("<TR VALIGN=TOP ALIGN=LEFT><TH>");
+		out.println("<form method=get action=manage_new.jsp>");
+		out.println("<input type=hidden name=name value="+usrName+">");
+		out.println("<input type=submit value=\"add new user\">");
+		out.println("</form>");
+		out.println("</TH></TR>");
+    	
+    	
     	out.println("<h3>Here are the persons listed:</h3>");
     	out.println("<TABLE>");
 		while(rset != null && rset.next()){

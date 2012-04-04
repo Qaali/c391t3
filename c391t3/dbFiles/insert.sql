@@ -23,4 +23,11 @@ insert into family_doctor values('doc','pat');
 insert into family_doctor values('doc2','pat');
 insert into family_doctor values('doc','pat2');
 insert into family_doctor values('doc2','pat2');
+
+drop sequence record_seq;
+create sequence record_seq;
+insert into radiology_record values (record_seq.nextval, 'pat', 'doc', 'rad', 'blah', '18-JUN-89', '18-JUN-89', 'bad', 'dead');
+drop sequence pic_seq_1;
+create sequence pic_seq_1;
+
 commit;

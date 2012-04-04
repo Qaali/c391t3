@@ -10,6 +10,7 @@
 	String address = "";
 	String email = "";
 	String phone = "";
+	String classname = "";
 
 	if(session.getAttribute("name") != null){
     	//establish the connection to the underlying database
@@ -40,7 +41,7 @@
     	//select the user table from the underlying db and validate the user name and password
 		Statement stmt = null;
     	ResultSet rset = null;
-		String sql = "select * from persons";
+		String sql = "select * from users";
 		try{
     		stmt = conn.createStatement();
         	rset = stmt.executeQuery(sql);
@@ -63,10 +64,13 @@
     	out.println("<TABLE>");
 		while(rset != null && rset.next()){
 			usrName = (rset.getString(1)).trim();
+			classname = (rset.getString(3)).trim();
 			out.println("<TR VALIGN=TOP ALIGN=LEFT><TH>");
 			out.println("<form method=get action=manage2.jsp>");
 			out.println(usrName+"<input type=hidden name=name value="+usrName+">");
-			out.println("<input type=submit value=view>");
+			out.println("<input type=hidden name=classname value="+classname+">");
+			out.println("<input type=submit name=b1 value=view>");
+			out.println("<input type=submit name=b2 value=remove>");
 			out.println("</form>");
 			out.println("</TH></TR>");
 		}

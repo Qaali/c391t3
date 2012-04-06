@@ -25,9 +25,9 @@
         	out.println("<hr>" + ex.getMessage() + "<hr>");
     	}
 
+    	String userName = (String) session.getAttribute("name");
 		String patname = request.getParameter("patname");
 		String docname = request.getParameter("docname");
-		String radname = request.getParameter("radname");
 		String testtype = request.getParameter("testtype");
 		String presdate = request.getParameter("presdate");
 		String testdate = request.getParameter("testdate");
@@ -47,7 +47,7 @@
 			stmt = conn.prepareStatement(sql);
     		stmt.setString(1, patname);
     		stmt.setString(2, docname);
-    		stmt.setString(3, radname);
+    		stmt.setString(3, userName);
     		stmt.setString(4, testtype);
     		stmt.setString(5, presdate);
     		stmt.setString(6, testdate);

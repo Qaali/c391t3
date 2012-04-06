@@ -1,4 +1,5 @@
 <%@ page import="java.sql.*" %>
+<%@ page import="java.util.*" %>
 <%
 	String title = "Data Analysis ";
 %>
@@ -56,37 +57,30 @@
         	out.println("<hr>" + ex.getMessage() + "<hr>");
     	}
 
-		try{
-        	conn.close();
-     	}
-        catch(Exception ex){
-       		out.println("<hr>" + ex.getMessage() + "<hr>");
-        }
-		
         String sql = "select SUM(m.recnum)";
-        List<String> myList = new ArrayList<String>();
+        List myList = new ArrayList();
         
 		if(request.getParameter("check_patient") != null){
 			//out.println("yes patient");
 			sql = sql+" ,m.patient_name";
-			myList.add("check_patient");
+			myList.add("Patient");
 		}
 		if(request.getParameter("check_test") != null){
 			//out.println("yes type");
 			sql = sql+" ,m.test_type";
-			myList.add("check_test");
+			myList.add("Test Type");
 		}
 		if(!request.getParameter("mydropdown").equals("")){
-			out.println(request.getParameter("mydropdown"));
+			//out.println(request.getParameter("mydropdown"));
 			if(request.getParameter("mydropdown").equals("Week")){
 				sql = sql+", week from rec_week m group by m.week";
-				myList.add("Week");
+				myList.add("Week(WW-YYYY)");
 			}else if(request.getParameter("mydropdown").equals("Month")){
 				sql = sql+", month from rec_month m group by m.month";
-				myList.add("Month");
+				myList.add("Month(MMM-YYYY)");
 			}else{
 				sql = sql+", d.Year from rec_month m, rec_date d where m.Month = d.Month group by d.Year";
-				myList.add("Year");
+				myList.add("Year(YYYY)");
 			}
 			
 			if(request.getParameter("check_patient") != null){
@@ -115,8 +109,52 @@
 				}
 			}
 		}
-		out.println(sql);
-		out.println(myList.size());
+//		out.println(sql);
+//		out.println(myList.size());
+//		out.println(myList.get(0));
+		
+		Statement stmt = null;
+		ResultSet rset = null;
+		
+		try{
+			stmt = conn.createStatement();
+	    	rset = stmt.executeQuery(sql);
+	    	
+	        ResultSetMetaData rsmd = rset.getMetaData();
+	        int colCount = rsmd.getColumnCount();
+	        
+	        out.println("<table id=\"border\"><tr>");
+	        out.println("<th id=\"border\">Number</th>");
+	        for (int j=0; j< myList.size(); j++) { 
+				out.println("<th id=\"border\">"+myList.get(j)+"</th>");
+	        }
+	        out.println("</tr>");
+	        
+	       	while(rset != null && rset.next()){
+	       		//out.println("!!!!!!!!!!!!!!!!");
+	  			out.println("<tr>");
+	  			for(int k=1;k<=colCount; k++) {
+	  				out.println("<td id=\"border\">"+(rset.getString(k)).trim()+"</td>");
+	  			}
+	  			out.println("</tr>");
+	       	}
+
+			out.println("</table>");	
+		}
+    	catch(Exception ex){
+        	out.println("<hr>" + ex.getMessage() + "<hr>");
+		}
+		
+		try{
+        	conn.close();
+     	}
+        catch(Exception ex){
+       		out.println("<hr>" + ex.getMessage() + "<hr>");
+        }
+		
+ 
+		
+		
 		
 	}else if(session.getAttribute("name") != null && request.getParameter("pSubmit") == null){
 

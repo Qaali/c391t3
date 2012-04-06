@@ -67,3 +67,44 @@ CREATE TABLE pacs_images (
    PRIMARY KEY(record_id,image_id),
    FOREIGN KEY(record_id) REFERENCES radiology_record
 );
+
+/* Commands added by team */
+/* Create sequence for record creation */
+DROP SEQUENCE record_seq;
+CREATE SEQUENCE record_seq;
+
+/* Create index for search */
+DROP INDEX pat_index;
+CREATE INDEX pat_index ON radiology_record(patient_name) 
+	INDEXTYPE IS ctxsys.context 
+	PARAMETERS ('SYNC (ON COMMIT)');
+
+DROP INDEX diag_index;
+CREATE INDEX diag_index ON radiology_record(diagnosis) 
+	INDEXTYPE IS ctxsys.context 
+	PARAMETERS ('SYNC (ON COMMIT)');
+
+DROP INDEX desc_index;
+CREATE INDEX desc_index ON radiology_record(description) 
+	INDEXTYPE IS ctxsys.context 
+	PARAMETERS ('SYNC (ON COMMIT)');
+
+/* Create views for OLAP */
+DROP VIEW rec_date;
+CREATE VIEW rec_date AS 
+	SELECT record_id, to_char(test_date, 'WW-YYYY') AS week, to_char(test_date, 'MON-YYYY') AS month, 
+	to_char(test_date, 'YYYY') AS year FROM radiology_record;
+
+DROP VIEW rec_week;
+CREATE VIEW rec_week AS 
+	SELECT COUNT(r.record_id) AS recnum, r.patient_name, r.test_type, d.week 
+	FROM radiology_record r, rec_date d 
+	WHERE r.record_id = d.record_id 
+	GROUP BY r.patient_name, r.test_type, d.week;
+
+DROP VIEW rec_month;
+CREATE VIEW rec_month AS 
+	SELECT COUNT(r.record_id) AS recnum, r.patient_name, r.test_type, d.month 
+	FROM radiology_record r, rec_date d 
+	WHERE r.record_id = d.record_id 
+	GROUP BY r.patient_name, r.test_type, d.month;

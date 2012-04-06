@@ -95,7 +95,7 @@ public class UploadImage extends HttpServlet {
  
 			// to retrieve the lob_locator 
 			// Note that you must use "FOR UPDATE" in the select statement
-			String cmd = "SELECT * FROM pacs_images WHERE image_id = "+pic_id+" FOR UPDATE";
+			String cmd = "SELECT * FROM pacs_images WHERE image_id = "+pic_id+" and record_id = "+recid+" FOR UPDATE";
 			ResultSet rset = stmt.executeQuery(cmd);
 			rset.next();
 			BLOB thumbblob = ((OracleResultSet)rset).getBLOB(3);
@@ -118,7 +118,8 @@ public class UploadImage extends HttpServlet {
 			regout.close();
 			fullout.close();
 
-			stmt.executeUpdate("commit");
+			//stmt.executeUpdate();
+			conn.commit();
 			result = "ok";
 			conn.close();
 

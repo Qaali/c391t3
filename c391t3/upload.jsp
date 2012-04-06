@@ -20,15 +20,11 @@
 				<TD><INPUT TYPE="text" NAME="docname"></TD>
 			</TR>
 			<TR VALIGN=TOP ALIGN=LEFT>
-				<TH>Radiologist Name:</TH>
-				<TD><INPUT TYPE="text" NAME="radname"></TD>
-			</TR>
-			<TR VALIGN=TOP ALIGN=LEFT>
 				<TH>Test Type:</TH>
 				<TD><INPUT TYPE="text" NAME="testtype"></TD>
 			</TR>
 			<TR VALIGN=TOP ALIGN=LEFT>
-				<TH COLSPAN=2><I>Valid Date Format "DD-MMM-YY"</I></TH>
+				<TH COLSPAN=2><I>Valid Date Format "DD-MON-YYYY"</I></TH>
 			</TR>
 			<TR VALIGN=TOP ALIGN=LEFT>
 				<TH>Prescribing Date:</TH>

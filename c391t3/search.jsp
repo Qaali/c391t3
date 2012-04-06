@@ -22,6 +22,9 @@
 				<TH COLSPAN=2><U>And/Or</U></TH>
 			</TR>
 			<TR VALIGN=TOP ALIGN=LEFT>
+				<TH COLSPAN=2><I>Valid Date Format "DD-MON-YYYY"</I></TH>
+			</TR>
+			<TR VALIGN=TOP ALIGN=LEFT>
 				<TH>Start Date:</TH>
 				<TD><INPUT TYPE="text" NAME="startdate"></TD>
 			</TR>

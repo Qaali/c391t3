@@ -32,21 +32,7 @@
     		catch(Exception ex){
         		out.println("<hr>" + ex.getMessage() + "<hr>");
     		}
-
-    		//Update indices on radiology_record
-    		//try{
-    		//	Statement indexStmt = conn.createStatement();
-    		//	indexStmt.executeUpdate("alter index pat_index rebuild");
-    		//	indexStmt.executeUpdate("alter index diag_index rebuild");
-    		//	indexStmt.executeUpdate("alter index desc_index rebuild");
-    		//	conn.commit();
-    		//}
-    		//catch(Exception ex){
-        	//	out.println("<hr>" + ex.getMessage() + "<hr>");
-			//}
     	
-    		//select score(1), score(2), score(3), score(1)*6 + score(2)*3 + score(3) as rank, record_id from radiology_record where 
-    		//contains(patient_name, ?, 1) >= 0 and contains(diagnosis, ?, 2) >= 0 and contains(description, ?, 3) >= 0 ORDER BY rank DESC;
     		String sql = "select ";
     		String startDate = request.getParameter("startdate");
     		String endDate = request.getParameter("enddate");
@@ -57,31 +43,33 @@
     			clauses.add("test_date >= ? ");
     		if(!endDate.equals(""))
     			clauses.add("test_date <= ? ");
-    		if(!keywords.equals(""))    			
-    			clauses.add("contains(patient_name, ?, 1) >= 0 and contains(diagnosis, ?, 2) >= 0 "+
-    						"and contains(description, ?, 3) >= 0 ");
+    		if(!keywords.equals("")){ 			
+    			clauses.add("contains(r.patient_name, ?, 1) >= 0 and contains(r.diagnosis, ?, 2) >= 0 "+
+    						"and contains(r.description, ?, 3) >= 0 ");
+    			String score = "score(1)*6 + score(2)*3 + score(3) as rank, score(1), score(2), score(3), ";
+    			sql = sql.concat(score);
+    		}
 
     		String userName = (String) session.getAttribute("name");
 			String classtype = (String) session.getAttribute("classtype");
 			if(classtype.equals("r"))
-				clauses.add("radiologist_name = ? ");
+				clauses.add("r.radiologist_name = ? ");
 			else if(classtype.equals("d"))
-				clauses.add("? IN (SELECT doctor_name from family_doctor d where d.patient_name = patient_name) ");
+				clauses.add("? IN (SELECT d.doctor_name from family_doctor d where d.patient_name = r.patient_name) ");
 			else if(classtype.equals("p"))
-				clauses.add("patient_name = ? ");
+				clauses.add("r.patient_name = ? ");
     		
     		String orderBy = "";
-    		if(request.getParameter("order").equals("Rank")){
-    			String score = "score(1)*6 + score(2)*3 + score(3) as rank, ";
-    			sql = sql.concat(score);
+    		if(request.getParameter("order").equals("Rank"))
     			orderBy = "rank DESC";
-    		}
     		else if(request.getParameter("order").equals("Most-Recent-First"))
-    			orderBy = "test_date DESC";
+    			orderBy = "r.test_date DESC";
     		else if(request.getParameter("order").equals("Most-Recent-Last"))
-    			orderBy = "test_date ASC";
+    			orderBy = "r.test_date ASC";
     	
-    		String start = "record_id, patient_name, test_date, diagnosis from radiology_record ";
+    		String start = "r.record_id, r.patient_name, r.doctor_name, r.radiologist_name, r.test_type, "+
+    			"to_char(r.prescribing_date, 'DD-MON-YYYY') as prescribing_date, to_char(r.test_date, 'DD-MON-YYYY') as test_date, "+
+    			"r.diagnosis, r.description from radiology_record r ";
 			sql = sql.concat(start);
 			
 			boolean first = true;
@@ -124,7 +112,7 @@
 	            out.println("<tr>");
 	            
 	           	while(rset != null && rset.next()){
-	           		if(!(request.getParameter("order").equals("Rank") && rset.getInt(1) == 0)){
+	           		if(!(!keywords.equals("") && rset.getInt(1) == 0)){
 	           			out.println("<tr>");
 	           			for(int k=1;k<=colCount; k++) {
 	           				out.println("<td id=\"border\">"+(rset.getString(k)).trim()+"</td>");

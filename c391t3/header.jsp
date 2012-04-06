@@ -28,6 +28,10 @@
 			margin-left: 200px;
 			padding-left: 30px;
 		}
+		
+		#border {
+			border: 2px inset black;
+		}
 		</style>
 	</HEAD>
 

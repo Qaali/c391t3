@@ -77,7 +77,7 @@
 				myList.add("Week(WW-YYYY)");
 			}else if(request.getParameter("mydropdown").equals("Month")){
 				sql = sql+", month from rec_month m group by m.month";
-				myList.add("Month(MMM-YYYY)");
+				myList.add("Month(MON-YYYY)");
 			}else{
 				sql = sql+", d.Year from rec_month m, rec_date d where m.Month = d.Month group by d.Year";
 				myList.add("Year(YYYY)");
@@ -124,7 +124,7 @@
 	        int colCount = rsmd.getColumnCount();
 	        
 	        out.println("<table id=\"border\"><tr>");
-	        out.println("<th id=\"border\">Number</th>");
+	        out.println("<th id=\"border\">Number of Record</th>");
 	        for (int j=0; j< myList.size(); j++) { 
 				out.println("<th id=\"border\">"+myList.get(j)+"</th>");
 	        }

@@ -46,7 +46,7 @@
     		if(!keywords.equals("")){ 			
     			clauses.add("contains(r.patient_name, ?, 1) >= 0 and contains(r.diagnosis, ?, 2) >= 0 "+
     						"and contains(r.description, ?, 3) >= 0 ");
-    			String score = "score(1)*6 + score(2)*3 + score(3) as rank, score(1), score(2), score(3), ";
+    			String score = "score(1)*6 + score(2)*3 + score(3) as rank, ";
     			sql = sql.concat(score);
     		}
 
@@ -83,7 +83,6 @@
 			}
 			
 			sql = sql.concat("ORDER BY "+orderBy);
-			out.println("<hr>" + sql + "<hr>");
 			
 			PreparedStatement stmt = null;
     		ResultSet rset = null;
@@ -105,19 +104,41 @@
 	        	rset = stmt.executeQuery();
 	            ResultSetMetaData rsmd = rset.getMetaData();
 	            int colCount = rsmd.getColumnCount();
+	            int loop = 1;
+	            if(!keywords.equals(""))
+	            	loop = 2;
 	            out.println("<table id=\"border\"><tr>");
-	            for (int j=1; j<= colCount; j++) { 
+	            for (int j=loop; j<= colCount; j++) { 
 					out.println("<th id=\"border\">"+rsmd.getColumnName(j)+"</th>");
 	            }
 	            out.println("<tr>");
 	            
 	           	while(rset != null && rset.next()){
 	           		if(!(!keywords.equals("") && rset.getInt(1) == 0)){
+	           			int recid = 2;
+	           			if(keywords.equals(""))
+	           				recid = 1;
 	           			out.println("<tr>");
-	           			for(int k=1;k<=colCount; k++) {
+	           			for(int k=loop;k<=colCount; k++) {
 	           				out.println("<td id=\"border\">"+(rset.getString(k)).trim()+"</td>");
 	           			}
 	           			out.println("</tr>");
+	           			
+	           			Statement picStmt = conn.createStatement();
+	           			String pquery = "select image_id from pacs_images where record_id = "+rset.getString(recid);
+	           			ResultSet picset = picStmt.executeQuery(pquery);
+	           			if(picset != null && picset.next()){
+	           				out.println("<tr><td COLSPAN="+colCount+">Images for record_id "+rset.getString(recid)+":");
+	           				String end = "rec="+rset.getString(recid)+"&pic="+picset.getString(1);
+           					out.println("<a href=\"GetOnePic?size=full&"+end+"\" target=\"_blank\">");
+           					out.println("<img src=\"GetOnePic?"+end+"\" height=\"45\" width=\"60\"></a>");
+	           				while(picset.next()){
+	           					end = "rec="+rset.getString(recid)+"&pic="+picset.getString(1);
+	           					out.println("<a href=\"GetOnePic?size=full&"+end+"\" target=\"_blank\">");
+	           					out.println("<img src=\"GetOnePic?"+end+"\" height=\"45\" width=\"60\"></a>");
+	           				}
+	           				out.println("</td></tr>");
+	           			}
 	           		}
 	           	}
 

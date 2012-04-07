@@ -1,3 +1,8 @@
+<!--
+	CMPUT 391 Team 3
+	Authors: Colby Warkentin(1169034) and Yiming Liu (1245022)
+ 	Function: Enter information on record search
+-->
 <%@ page import="java.sql.*" %>
 <%
 	String title = "Search Module";
@@ -5,6 +10,7 @@
 <%@ include file="header.jsp" %>
 		<div id="main">
 <%
+	//Check if logged in
 	if(session.getAttribute("name") != null){
 %>
 		<P>Search the Radiology Database </P>	
@@ -49,7 +55,7 @@
 <%
 	}
 	else {
-		out.println("You are not signed in.");
+		out.println("<p style=\"color:red\">You are not signed in.</p>");
 	}
 %>
 		</div>

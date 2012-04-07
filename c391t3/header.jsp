@@ -1,3 +1,8 @@
+<!--
+	CMPUT 391 Team 3
+	Authors: Colby Warkentin(1169034) and Yiming Liu (1245022)
+ 	Function: Header creates the Header and Sidebar for our website
+-->
 <!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN">
 <HTML>
 	<HEAD>
@@ -37,9 +42,11 @@
 
 	<BODY>
 		<div id="header">
-			<h1 style="text-align:center">CMPUT 391 Team 3 <%= title %></h1>
+			<h1 style="text-align:center; margin-bottom:0px">Radiology Database - <%= title %></h1>
+			<h3 style="text-align:center; margin-top:0px">CMPUT 391 Team 3 - Colby Warkentin, Yiming Liu</h3>
 		
 			<% 
+				//Put username or login in header
 				if(session.getAttribute("name") != null){
 					out.println("<p style=\"text-align:right\">Hello, "+session.getAttribute("name")+". ");
 					out.println("<a href=\"login.jsp?logout=true\">Logout</a></p>");
@@ -53,6 +60,7 @@
 		<div id="sidebar">
 			<b><u>Menu</u></b><br>
 		<%
+			//Populate Sidebar depending on class
 			if(session.getAttribute("classtype") != null){
 				String id = (String) session.getAttribute("classtype");
 				if(id.equals("a")){
@@ -65,7 +73,7 @@
 					out.println("<a href=\"upload.jsp\">Record Upload</a><br>");
 				out.println("<a href=\"search.jsp\">Search</a><br>");
 				out.println("<a href=\"profile.jsp\">Edit Profile</a><br>");
-				out.println("<a href=\"help.html\">Help</a>");
 			}
+			out.println("<a href=\"help.html\">Help</a>");
 		%>
 		</div>

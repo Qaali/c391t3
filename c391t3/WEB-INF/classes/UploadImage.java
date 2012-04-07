@@ -17,6 +17,13 @@
  		*  WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
  		*  See the License for the specific language governing permissions and
  		*  limitations under the License.
+ *
+ * CMPUT 391 Team 3
+ *
+ * Function: Accept image from radiologist and upload to the database
+ * 
+ * @author  Colby Warkentin(1169034) and Yiming Liu (1245022)
+ * 
  ***/
 
 import java.io.*;
@@ -53,10 +60,8 @@ public class UploadImage extends HttpServlet {
 	}
 	String drivername = "oracle.jdbc.driver.OracleDriver";
 	String dbstring ="jdbc:oracle:thin:@gwynne.cs.ualberta.ca:1521:CRS";
-	int pic_id;
 	
 	String recid = "";
-	
 	if(session.getAttribute("name") != null){
 		try {
 			//Parse the HTTP request to get the image stream
@@ -81,56 +86,68 @@ public class UploadImage extends HttpServlet {
 			// Connect to the database and create a statement
 			Connection conn = getConnected(drivername,dbstring, username,password);
 			Statement stmt = conn.createStatement();
-	    
-			/*
-			 *  First, to generate a unique pic_id using an SQL sequence
-			 */
-			ResultSet rset1 = stmt.executeQuery("SELECT pic_seq_"+recid+".nextval from dual");
-			rset1.next();
-			pic_id = rset1.getInt(1);
+			
+			String userName = (String) session.getAttribute("name");
+			String secQuery = "SELECT radiologist_name FROM radiology_record WHERE record_id = ? AND radiologist_name = ?";
+			PreparedStatement secStmt = conn.prepareStatement(secQuery);
+			secStmt.setInt(1, Integer.parseInt(recid));
+			secStmt.setString(2, userName);
+			ResultSet secSet = secStmt.executeQuery();
+			
+			if(secSet != null && secSet.next()){
+				//First, to generate a unique pic_id using an SQL sequence
+				ResultSet rsetPic = stmt.executeQuery("SELECT pic_seq.nextval from dual");
+				rsetPic.next();
+				int image_id = rsetPic.getInt(1);
 
-			//Insert an empty blob into the table first. Note that you have to 
-			//use the Oracle specific function empty_blob() to create an empty blob
-			stmt.execute("INSERT INTO pacs_images VALUES("+recid+","+pic_id+",empty_blob(),empty_blob(),empty_blob())");
+				//Insert an empty blob into the table first. Note that you have to 
+				//use the Oracle specific function empty_blob() to create an empty blob
+				String prepIn = "INSERT INTO pacs_images VALUES(?, ?, empty_blob(), empty_blob(), empty_blob())";
+				PreparedStatement prepStmt = conn.prepareStatement(prepIn);
+				prepStmt.setInt(1, Integer.parseInt(recid));
+				prepStmt.setInt(2, image_id);
+				prepStmt.executeQuery();
  
-			// to retrieve the lob_locator 
-			// Note that you must use "FOR UPDATE" in the select statement
-			String cmd = "SELECT * FROM pacs_images WHERE image_id = "+pic_id+" and record_id = "+recid+" FOR UPDATE";
-			ResultSet rset = stmt.executeQuery(cmd);
-			rset.next();
-			BLOB thumbblob = ((OracleResultSet)rset).getBLOB(3);
-			BLOB regblob = ((OracleResultSet)rset).getBLOB(4);
-			BLOB fullblob = ((OracleResultSet)rset).getBLOB(5);
+				// Retrieve the lob_locator 
+				String cmd = "SELECT * FROM pacs_images WHERE record_id = ? and image_id = ? FOR UPDATE";
+				PreparedStatement cmdStmt = conn.prepareStatement(cmd);
+				cmdStmt.setInt(1, Integer.parseInt(recid));
+				cmdStmt.setInt(2, image_id);			
+				ResultSet rset = cmdStmt.executeQuery();
+				
+				rset.next();
+				BLOB thumbblob = ((OracleResultSet)rset).getBLOB(3);
+				BLOB regblob = ((OracleResultSet)rset).getBLOB(4);
+				BLOB fullblob = ((OracleResultSet)rset).getBLOB(5);
 
+				//Write the image to the blob object
+				OutputStream thumbout = thumbblob.getBinaryOutputStream();
+				ImageIO.write(thumbNail, "jpg", thumbout);
 
-			//Write the image to the blob object
-			OutputStream thumbout = thumbblob.getBinaryOutputStream();
-			ImageIO.write(thumbNail, "jpg", thumbout);
-
-			OutputStream regout = regblob.getBinaryOutputStream();
-			ImageIO.write(img, "jpg", regout);
+				OutputStream regout = regblob.getBinaryOutputStream();
+				ImageIO.write(img, "jpg", regout);
 	    
-			OutputStream fullout = fullblob.getBinaryOutputStream();
-			ImageIO.write(img, "jpg", fullout);
+				OutputStream fullout = fullblob.getBinaryOutputStream();
+				ImageIO.write(img, "jpg", fullout);
 
-			instream.close();
-			thumbout.close();
-			regout.close();
-			fullout.close();
+				instream.close();
+				thumbout.close();
+				regout.close();
+				fullout.close();
 
-			//stmt.executeUpdate();
-			conn.commit();
-			result = "ok";
-			conn.close();
-
-		} 
+				conn.commit();
+				result = "ok";
+				conn.close();
+			}
+			else
+				result = "Permission Denied";
+		}
 		catch( Exception ex ) {
 			result = ex.getMessage();
 		}
 	}
-	else {
+	else 
 		result = "not logged in";
-	}
 
 	//Output response to the client
 	response.sendRedirect("uploadAfter.jsp?recid="+recid+"&result="+result);

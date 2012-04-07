@@ -1,17 +1,22 @@
+<!--
+	CMPUT 391 Team 3
+	Authors: Colby Warkentin(1169034) and Yiming Liu (1245022)
+ 	Function: Add record to database
+-->
 <%@ page import="java.sql.*" %>
 <%
 	String error = "";
-	if(session.getAttribute("name") != null && request.getParameter("rSubmit") != null){
+	String classType = (String) session.getAttribute("classtype");
+	if(session.getAttribute("name") != null && request.getParameter("rSubmit") != null && classType.equals("r")){
     	//establish the connection to the underlying database
 		Connection conn = null;
     	String driverName = "oracle.jdbc.driver.OracleDriver";
     	String dbstring = "jdbc:oracle:thin:@gwynne.cs.ualberta.ca:1521:CRS";
-
     	try{
         	//load and register the driver
 			Class drvClass = Class.forName(driverName); 
     		DriverManager.registerDriver((Driver) drvClass.newInstance());
-    		//establish the connection 
+    		//Check for custom database signin
     		if(session.getAttribute("dbuser") != null){
     			String dbUser = (String) session.getAttribute("dbuser");
     			String dbPass = (String) session.getAttribute("dbpass");
@@ -25,6 +30,7 @@
         	out.println("<hr>" + ex.getMessage() + "<hr>");
     	}
 
+    	//Get information from request
     	String userName = (String) session.getAttribute("name");
 		String patname = request.getParameter("patname");
 		String docname = request.getParameter("docname");
@@ -34,12 +40,13 @@
 		String diag = request.getParameter("diag");
 		String desc = request.getParameter("desc");
 
-    	//select the user table from the underlying db and update persons
+    	//Select the user table from the underlying db and update persons
     	Statement recstmt = conn.createStatement();
 		ResultSet recrset = recstmt.executeQuery("SELECT record_seq.nextval from dual");
 		recrset.next();
 		int recid = recrset.getInt(1);
 		
+		//Insert record
 		PreparedStatement stmt = null;
     	ResultSet rset = null;
 		String sql = "insert into radiology_record values("+recid+",?,?,?,?,?,?,?,?)";
@@ -54,9 +61,6 @@
     		stmt.setString(7, diag);
     		stmt.setString(8, desc);
 	        stmt.executeUpdate();
-	        
-	        Statement seqstmt = conn.createStatement();
-			seqstmt.executeQuery("CREATE SEQUENCE pic_seq_"+recid);
 
 	        conn.commit();
 	        response.sendRedirect("uploadAfter.jsp?recid="+recid+"&result=recok");
@@ -73,14 +77,14 @@
         }
 	}
 	else
-		error = "You are not signed in or did not submit";
+		error = "You are not signed in as a radiologist or did not submit";
 
 	if(!error.equals("")){
 		String title = "Upload Record";
 %>
 <%@ include file="header.jsp" %>
 		<div id="main">
-		<%= error %>
+		<p style="color:red"><%= error %></p>
 		</div>
 	</BODY>
 </HTML>

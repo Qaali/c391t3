@@ -1,8 +1,9 @@
 /*
- *  File name:  setup.sql
- *  Function:   to create the initial database schema for the CMPUT 391 project,
+ *  CMPUT 391 Team 3
+ *  Authors: Colby Warkentin(1169034) and Yiming Liu (1245022)
+ *  Function:   To create the initial database schema for the CMPUT 391 project,
  *              Winter Term, 2012
- *  Author:     Prof. Li-Yan Yuan
+ *  Adapted from setup.sql by Prof. Li-Yan Yuan
  */
 DROP TABLE persons;
 DROP TABLE family_doctor;
@@ -72,6 +73,9 @@ CREATE TABLE pacs_images (
 /* Create sequence for record creation */
 DROP SEQUENCE record_seq;
 CREATE SEQUENCE record_seq;
+
+DROP SEQUENCE pic_seq;
+CREATE SEQUENCE pic_seq;
 
 /* Create index for search */
 DROP INDEX pat_index;

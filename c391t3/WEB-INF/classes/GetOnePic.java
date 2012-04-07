@@ -4,15 +4,16 @@ import javax.servlet.http.*;
 import java.sql.*;
 
 /**
+ *  CMPUT 391 Team 3
+ *  
  *  This servlet sends one picture stored in the table below to the client 
  *  who requested the servlet. Based on a code sample by Li-Yan Yuan.
- *n
  *
- *  The request must come with a query string as follows:
+ *  Function: The request must come with a query string as follows:
  *    GetOnePic?rec=1&pic=3:        	sends the picture in thumbnail with image_id=3 and record_id=1
  *    GetOnePic?rec=1&pic=3&size=reg: 	sends the picture in regular_size with image_id=3 and record_id=1
  *
- *  @author  Colby Warkentin
+ *  @author  Colby Warkentin(1169034) and Yiming Liu (1245022)
  *
  */
 public class GetOnePic extends HttpServlet {
@@ -40,20 +41,34 @@ public class GetOnePic extends HttpServlet {
 		else
 			picsize = "small";
 	
+		String userName = (String) session.getAttribute("name");
+		String classtype = (String) session.getAttribute("classtype");
+		String adder = "";
+		if(classtype.equals("r"))
+			adder = " and r.radiologist_name = ? ";
+		else if(classtype.equals("d"))
+			adder = " and ? IN (SELECT d.doctor_name from family_doctor d where d.patient_name = r.patient_name) ";
+		else if(classtype.equals("p"))
+			adder = " and r.patient_name = ? ";
+		
 		String query;
 		if ( picsize.equals("reg") )  
-			query = "select regular_size from pacs_images where record_id=? and image_id=?";
+			query = "select p.regular_size from pacs_images p, radiology_record r where p.record_id=? and p.image_id=? and r.record_id = p.record_id";
 		else if( picsize.equals("full") )
-			query = "select full_size from pacs_images where record_id=? and image_id=?";
+			query = "select p.full_size from pacs_images p, radiology_record r where p.record_id=? and p.image_id=? and r.record_id = p.record_id";
 		else
-			query = "select thumbnail from pacs_images where record_id=? and image_id=?";
-
+			query = "select p.thumbnail from pacs_images p, radiology_record r where p.record_id=? and p.image_id=? and r.record_id = p.record_id";
+		if(!classtype.equals("a"))
+			query = query.concat(adder);
+		
 		Connection conn = null;
 		try {
 			conn = getConnected(username, password);
 			PreparedStatement stmt = conn.prepareStatement(query);
 			stmt.setInt(1, recid);
 			stmt.setInt(2, picid);
+			if(!classtype.equals("a"))
+				stmt.setString(3, userName);
 			ResultSet rset = stmt.executeQuery();
 
 			if ( rset.next() ) {

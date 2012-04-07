@@ -1,28 +1,27 @@
-<!--A simple example to demonstrate how to use JSP to 
-    connect and query a database. 
-    @author  Hong-Yu Zhang, University of Alberta
- -->
+<!--
+	CMPUT 391 Team 3
+	Authors: Colby Warkentin(1169034) and Yiming Liu (1245022)
+ 	Function: Validate login for database website
+-->
 <%@ page import="java.sql.*" %>
 <% 
 		boolean success = false;
 		String errorString = "";
 		String userName = "";
+		//Check if form submitted
         if(request.getParameter("bSubmit") != null) {
 	        //get the user input from the login page
         	userName = (request.getParameter("USERID")).trim();
 	        String passwd = (request.getParameter("PASSWD")).trim();
-
 	        //establish the connection to the underlying database
         	Connection conn = null;
-
 	        String driverName = "oracle.jdbc.driver.OracleDriver";
             String dbstring = "jdbc:oracle:thin:@gwynne.cs.ualberta.ca:1521:CRS";
-
 	        try{
 		        //load and register the driver
         		Class drvClass = Class.forName(driverName); 
 	        	DriverManager.registerDriver((Driver) drvClass.newInstance());
-	        	//establish the connection 
+	        	//Check for custom database connection
 	        	if(request.getParameter("checkdb") != null){
 	        		String dbUser = (request.getParameter("DBUSER")).trim();
 	        		String dbPass = (request.getParameter("DBPASS")).trim();
@@ -33,69 +32,73 @@
         		conn.setAutoCommit(false);
         	}
 	        catch(Exception ex){
-		        out.println("<hr>" + ex.getMessage() + "<hr>");
+		        out.println("<p style=\"color:red\">" + ex.getMessage() + "</p>");
 	        }
 
-	        //select the user table from the underlying db and validate the user name and password
-        	PreparedStatement stmt = null;
-	        ResultSet rset = null;
-        	String sql = "select password, class from users where user_name = ? ";
-        	try{
-        		stmt = conn.prepareStatement(sql);
-        		stmt.setString(1, userName);
-		        rset = stmt.executeQuery();
-        	}
-	        catch(Exception ex){
-		        out.println("<hr>" + ex.getMessage() + "<hr>");
-        	}
+	        if(conn != null){
+	        	//select the user table from the underlying db and validate the user name and password
+        		PreparedStatement stmt = null;
+	        	ResultSet rset = null;
+        		String sql = "select password, class from users where user_name = ? ";
+        		try{
+        			stmt = conn.prepareStatement(sql);
+        			stmt.setString(1, userName);
+		        	rset = stmt.executeQuery();
+        		}
+	        	catch(Exception ex){
+		        	out.println("<p style=\"color:red\">" + ex.getMessage() + "</p>");
+        		}
 
-	        String truepwd = "";
-	        String type = "";
+	        	//Check password using sample code from Li-Yan Yuan
+	        	String truepwd = "";
+	        	String type = "";
+        		while(rset != null && rset.next()){
+	        		truepwd = (rset.getString(1)).trim();
+	        		type = (rset.getString(2)).trim();
+        		}	
 	
-        	while(rset != null && rset.next()){
-	        	truepwd = (rset.getString(1)).trim();
-	        	type = (rset.getString(2)).trim();
-        	}	
-	
-        	//display the result
-	        if(passwd.equals(truepwd)){
-	        	success = true;
-	        	session.setAttribute("name", userName);
-	        	session.setAttribute("classtype", type);
-	        	if(request.getParameter("checkdb") != null){
-	        		String dbUser = (request.getParameter("DBUSER")).trim();
-	        		String dbPass = (request.getParameter("DBPASS")).trim();
-	        		session.setAttribute("dbuser", dbUser);
-	        		session.setAttribute("dbpass", dbPass);
+        		//If password is correct, save information in session
+	        	if(passwd.equals(truepwd)){
+	        		success = true;
+	        		session.setAttribute("name", userName);
+	        		session.setAttribute("classtype", type);
+	        		if(request.getParameter("checkdb") != null){
+	        			String dbUser = (request.getParameter("DBUSER")).trim();
+	        			String dbPass = (request.getParameter("DBPASS")).trim();
+	        			session.setAttribute("dbuser", dbUser);
+	        			session.setAttribute("dbpass", dbPass);
+	        		}
+		        	response.sendRedirect("main.jsp");
 	        	}
-		        response.sendRedirect("main.jsp");
-	        }
-        	else
-	        	errorString = "<p style=\"color: red\"><b>Either your userName or Your password is inValid!</b></p>";
+        		else
+	        		errorString = "<p style=\"color: red\">Either your userName or Your password is inValid!</p>";
 
-        	try{
-            	conn.close();
-         	}
-            catch(Exception ex){
-           		out.println("<hr>" + ex.getMessage() + "<hr>");
-            }
+        		try{
+            		conn.close();
+         		}
+            	catch(Exception ex){
+           			out.println("<p style=\"color: red\">" + ex.getMessage() + "</p>");
+            	}
+	        }
         }
+		//If logging out, invalidate cookie
         else if(request.getParameter("logout") != null){
         	session.invalidate();
         	session = request.getSession(true);
         }
-        
-        
+		
+        //If login failed, redisplay the login form
         if (!success) {
 %>
 <HTML>
 <HEAD>
-<TITLE>CMPUT 391 Team 3 Login</TITLE>
+<TITLE>CMPUT 391 Team 3  Radiology Database Login</TITLE>
 </HEAD>
 
 <BODY>
 <!--This is the login page-->
-<H1><CENTER>CMPUT 391 Team 3 Login</CENTER></H1>
+<H1><CENTER>Radiology Database Login</CENTER></H1>
+<h3 style="text-align:center; margin-top:0px">CMPUT 391 Team 3 - Colby Warkentin, Yiming Liu</h3>
 
 <FORM NAME="LoginForm" ACTION="login.jsp" METHOD="post" >
 

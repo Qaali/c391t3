@@ -1,3 +1,8 @@
+<!--
+	CMPUT 391 Team 3
+	Authors: Colby Warkentin(1169034) and Yiming Liu (1245022)
+ 	Function: Update the users personal information
+-->
 <%@ page import="java.sql.*" %>
 <%
 	String title = "Edit Profile";
@@ -23,7 +28,7 @@
         	//load and register the driver
 			Class drvClass = Class.forName(driverName); 
     		DriverManager.registerDriver((Driver) drvClass.newInstance());
-    		//establish the connection 
+    		//Check for custom database signin
     		if(session.getAttribute("dbuser") != null){
     			String dbUser = (String) session.getAttribute("dbuser");
     			String dbPass = (String) session.getAttribute("dbpass");
@@ -34,9 +39,8 @@
 			conn.setAutoCommit(false);
 		}
     	catch(Exception ex){
-        	out.println("<hr>" + ex.getMessage() + "<hr>");
+        	out.println("<p style=\"color:red\">" + ex.getMessage() + "</p>");
     	}
-
 
     	//select the user table from the underlying db and validate the user name and password
     	String userName = (String) session.getAttribute("name");
@@ -49,11 +53,11 @@
 	        rset = stmt.executeQuery();
 		}
     	catch(Exception ex){
-        	out.println("<hr>" + ex.getMessage() + "<hr>");
+        	out.println("<p style=\"color:red\">" + ex.getMessage() + "</p>");
 		}
 
+    	//Get users information
     	String truepwd = "";
-
 		while(rset != null && rset.next()){
     		firstName = (rset.getString(2)).trim();
     		lastName = (rset.getString(3)).trim();
@@ -66,7 +70,7 @@
         	conn.close();
      	}
         catch(Exception ex){
-       		out.println("<hr>" + ex.getMessage() + "<hr>");
+       		out.println("<p style=\"color:red\">" + ex.getMessage() + "</p>");
         }
 %>
 		<P>Edit your profile below</P>
@@ -111,7 +115,7 @@
 <%
 	}
 	else {
-		out.println("You are not signed in.");
+		out.println("<p style=\"color:red\">You are not signed in.</p>");
 	}
 %>
 		</div>

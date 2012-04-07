@@ -1,33 +1,46 @@
+<!--
+	CMPUT 391 Team 3
+	Authors: Colby Warkentin(1169034) and Yiming Liu (1245022)
+ 	Function: Display generated report
+-->
 <%@ page import="java.sql.*" %>
 <%@ page import="java.util.*" %>
 <%
-	String title = "Report Generating";
+	String title = "Report Findings";
 %>
 <%@ include file="header.jsp" %>
 <div id="main">
 <%
-	String begin = request.getParameter("begin");
-	String end = request.getParameter("end");
-	String diagnosis = request.getParameter("diagnosis");
+	//Initialize variables
+	String begin = "";
+	String end = "";
+	String diagnosis = "";
 	String name = "";
 	String address = "";
 	String phone = "";
 	String test_date = "";
 	
-	out.println("<h3>Here are the users have test of "+diagnosis+" during "+begin+" to "+end+".</h3>");
-
-	if(session.getAttribute("name") != null){
-    	//establish the connection to the underlying database
+	if( request.getParameter("rSubmit") != null){
+		begin = request.getParameter("begin");
+		end = request.getParameter("end");
+		diagnosis = request.getParameter("diagnosis");
+	}
+	
+	boolean check = (begin.equals("") || end.equals("") || diagnosis.equals(""));	
+	String classType = (String) session.getAttribute("classtype");
+	if(session.getAttribute("name") != null && classType.equals("a") && !check){
+		//Display title
+		out.println("<h3>Here are the users that have been diagnosed with "+diagnosis+" from "+begin+" to "+end+".</h3>");
+    	
+		//establish the connection to the underlying database
 		Connection conn = null;
-
     	String driverName = "oracle.jdbc.driver.OracleDriver";
     	String dbstring = "jdbc:oracle:thin:@gwynne.cs.ualberta.ca:1521:CRS";
-
     	try{
         	//load and register the driver
 			Class drvClass = Class.forName(driverName); 
     		DriverManager.registerDriver((Driver) drvClass.newInstance());
-    		//establish the connection 
+    		//Check for custom database info
     		if(session.getAttribute("dbuser") != null){
     			String dbUser = (String) session.getAttribute("dbuser");
     			String dbPass = (String) session.getAttribute("dbpass");
@@ -38,15 +51,15 @@
 			conn.setAutoCommit(false);
 		}
     	catch(Exception ex){
-        	out.println("<hr>" + ex.getMessage() + "<hr>");
+        	out.println("<p style=\"color:red\">" + ex.getMessage() + "</p>");
     	}
 
-
-    	//select the user table from the underlying db and validate the user name and password
+    	//query the database for any records that fit the form
 		PreparedStatement stmt = null;
     	ResultSet rset = null;
-		String sql = "select p.user_name, p.address, p.phone, r.record_id, to_char(r.test_date, 'DD-MON-YYYY') as test_date from radiology_record r,persons p where r.patient_name = p.user_name and diagnosis= 'a' and test_date BETWEEN '12-JUN-89' and '17-JUN-89' ORDER BY record_id asc";
-		sql =        "select p.user_name, p.address, p.phone, r.record_id, to_char(r.test_date, 'DD-MON-YYYY') as test_date from radiology_record r,persons p where r.patient_name = p.user_name and diagnosis = ? and test_date BETWEEN ? and ? ORDER BY record_id asc";
+		String sql = "select p.user_name, p.address, p.phone, r.record_id, to_char(r.test_date, 'DD-MON-YYYY') as test_date " +
+			"from radiology_record r,persons p where r.patient_name = p.user_name and " +
+			"r.diagnosis = ? and r.test_date BETWEEN ? and ? ORDER BY r.test_date asc";
     	try{
     		stmt = conn.prepareStatement(sql);
     		stmt.setString(1, diagnosis);
@@ -55,7 +68,7 @@
 	        rset = stmt.executeQuery();
     	}
         catch(Exception ex){
-	        out.println("<hr>" + ex.getMessage() + "<hr>");
+	        out.println("<p style=\"color:red\">" + ex.getMessage() + "</p>");
     	}
 
         ArrayList<String> list=new ArrayList<String>();
@@ -64,9 +77,7 @@
     		address = (rset.getString(2)).trim();
     		phone = (rset.getString(3)).trim();
     		test_date = (rset.getString(5)).trim();
-    		if(list.contains(name)){
-    			//do nothing
-    		}else{
+    		if(!list.contains(name)){
     			list.add(name);
     			%>
     			<TABLE>
@@ -91,16 +102,21 @@
     			<%
     		}
     	}	
-
-//		while(rset != null && rset.next()){
-
-		//}
 		try{
         	conn.close();
      	}
         catch(Exception ex){
-       		out.println("<hr>" + ex.getMessage() + "<hr>");
+       		out.println("<p style=\"color:red\">" + ex.getMessage() + "</p>");
         }
+	}
+	else if(session.getAttribute("name") != null && classType.equals("a") && check){
+		out.println("<p style=\"color:red\">You failed to complete the form</p>");
+	}
+	else if(session.getAttribute("name") != null){
+		out.println("<p style=\"color:red\">You are not an admin.</p>");
+	}
+	else {
+		out.println("<p style=\"color:red\">You are not signed in.</p>");
 	}
 %>
 	</div>

@@ -1,8 +1,15 @@
+<!--
+	CMPUT 391 Team 3
+	Authors: Colby Warkentin(1169034) and Yiming Liu (1245022)
+ 	Function: Display table to add record or alternately
+ 		add an image to an existing record
+-->
 <%@ page import="java.sql.*" %>
 <%
 	String title = "User Management";
 %>
 <%@ include file="header.jsp" %>
+		<div id="main">
 <%
 	String usrName = request.getParameter("name");
 	String firstName = "";
@@ -303,8 +310,9 @@
 	        	<%
 	        }
 		}
-	}else{
-		out.println("<h3>Please log in as Administor.</h3>");
+	}
+	else{
+		out.println("<p style=\"color:red\">Please log in as Administor.</p>");
 	}
 %>
 		</div>

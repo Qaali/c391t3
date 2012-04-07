@@ -1,3 +1,8 @@
+/*
+ *  CMPUT 391 Team 3
+ *  Authors: Colby Warkentin(1169034) and Yiming Liu (1245022)
+ *  Function: database inserts for testing purposes
+ */
 insert into users values('colby', 'admin', 'a', '18-JUN-1989');
 insert into persons values('colby', 'Colby', 'Warkentin', 'somewhere', 'me1@mac.com', '780000001');
 
@@ -27,45 +32,15 @@ insert into family_doctor values('rick','pat');
 insert into family_doctor values('doc','bill');
 insert into family_doctor values('rick','susy');
 
-
 insert into radiology_record values (record_seq.nextval, 'pat', 'doc', 'rad', 'X-ray', '18-JUN-1989', '18-JUN-1989', 'Breast Cancer', 'X-ray found breast cancer');
-drop sequence pic_seq_1;
-create sequence pic_seq_1;
-
 insert into radiology_record values (record_seq.nextval, 'pat', 'doc', 'rad', 'MRI', '18-JUN-2011', '18-JUN-2011', 'Okay', 'MRI confirmed nothing in his heart');
-drop sequence pic_seq_2;
-create sequence pic_seq_2;
-
 insert into radiology_record values (record_seq.nextval, 'bill', 'doc', 'rad', 'CAT', '18-DEC-2011', '18-DEC-2011', 'Throat Cancer', 'Cat-scan found throat cancer');
-drop sequence pic_seq_3;
-create sequence pic_seq_3;
-
 insert into radiology_record values (record_seq.nextval, 'bill', 'rick', 'rad', 'physical', '18-JUN-2009', '18-JUN-2009', 'Breast Cancer', 'physical found breast cancer');
-drop sequence pic_seq_4;
-create sequence pic_seq_4;
-
 insert into radiology_record values (record_seq.nextval, 'susy', 'rick', 'rad', 'MRI', '18-JUN-2010', '18-JUN-2010', 'Heart Attack', 'dead');
-drop sequence pic_seq_5;
-create sequence pic_seq_5;
-
 insert into radiology_record values (record_seq.nextval, 'pat', 'doc', 'verne', 'MRI', '18-JUL-2011', '18-JUN-1989', 'Breast Cancer', 'x-ray inconclusive, MRI did confirm doctors opinion');
-drop sequence pic_seq_6;
-create sequence pic_seq_6;
-
 insert into radiology_record values (record_seq.nextval, 'pat', 'doc', 'verne', 'MRI', '18-AUG-2011', '18-JUN-2011', 'Okay', 'MRI confirmed nothing in his heart, but she has breast cancer');
-drop sequence pic_seq_7;
-create sequence pic_seq_7;
-
 insert into radiology_record values (record_seq.nextval, 'bill', 'rick', 'verne', 'CAT', '19-AUG-2011', '20-AUG-2011', 'Throat Cancer', 'Cat-scan found throat cancer, MRI did not');
-drop sequence pic_seq_8;
-create sequence pic_seq_8;
-
 insert into radiology_record values (record_seq.nextval, 'bill', 'rick', 'verne', 'MRI', '21-AUG-2011', '21-AUG-2011', 'Breast Cancer', 'Bill back again, has male breast cancer');
-drop sequence pic_seq_9;
-create sequence pic_seq_9;
-
 insert into radiology_record values (record_seq.nextval, 'susy', 'rick', 'verne', 'MRI', '01-DEC-2011', '01-DEC-2011', 'Heart Attack', 'dead, not sure why we still examine her');
-drop sequence pic_seq_10;
-create sequence pic_seq_10;
 
 commit;

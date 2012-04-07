@@ -1,11 +1,17 @@
+<!--
+	CMPUT 391 Team 3
+	Authors: Colby Warkentin(1169034) and Yiming Liu (1245022)
+ 	Function: Delete row from family_doctor table
+-->
 <%@ page import="java.sql.*" %>
 <%
-	String title = "Delete doc/pat";
+	String title = "Delete Family Doctor";
 %>
 <%@ include file="header.jsp" %>
 		<div id="main">
 <%
-	if(session.getAttribute("name") != null && request.getParameter("pSubmit") != null){
+	String classType = (String) session.getAttribute("classtype");
+	if(session.getAttribute("name") != null && request.getParameter("pSubmit") != null && classType.equals("a")){
     	//establish the connection to the underlying database
 		Connection conn = null;
 
@@ -16,7 +22,7 @@
         	//load and register the driver
 			Class drvClass = Class.forName(driverName); 
     		DriverManager.registerDriver((Driver) drvClass.newInstance());
-    		//establish the connection 
+    		//Check for custom database signin
     		if(session.getAttribute("dbuser") != null){
     			String dbUser = (String) session.getAttribute("dbuser");
     			String dbPass = (String) session.getAttribute("dbpass");
@@ -34,21 +40,17 @@
 		String patient_name = request.getParameter("patient_name");
 		String classname = request.getParameter("class");
 
-    	//select the user table from the underlying db and update persons
+    	//delete the corresponding patient/doctor row in family_doctor
 		PreparedStatement stmt = null;
-    	//Statement stmt = null;
     	ResultSet rset = null;
-    	
 		String sql = "DELETE FROM family_doctor WHERE doctor_name = ? AND patient_name = ?";
 		try{
 			stmt = conn.prepareStatement(sql);
     		stmt.setString(1, doctor_name);
     		stmt.setString(2, patient_name);
-    		//out.println("<p>"+sql+"</p>");
-    		//stmt = conn.createStatement();
 	        stmt.executeUpdate();
 	        conn.commit();
-	        out.println("<p>Delete Success!</p>");
+	        out.println("<p style=\"color:green\">Delete Success!</p>");
 	        if(classname.equals("d")){
 				out.println("<form method=get action=manage2.jsp>");
 				out.println("<input type=hidden name=name value="+doctor_name+">");
@@ -62,18 +64,21 @@
 	        }
 		}
     	catch(Exception ex){
-        	out.println("<hr>" + ex.getMessage() + "<hr>");
+        	out.println("<p style=\"color:red\">" + ex.getMessage() + "</p>");
 		}
 	    	
 		try{
         	conn.close();
      	}
         catch(Exception ex){
-       		out.println("<hr>" + ex.getMessage() + "<hr>");
+       		out.println("<p style=\"color:red\">" + ex.getMessage() + "</p>");
         }
 	}
-	else{
-		out.println("You are not signed in.");
+	else if(session.getAttribute("name") != null){
+		out.println("<p style=\"color:red\">You are not an admin.</p>");
+	}
+	else {
+		out.println("<p style=\"color:red\">You are not signed in.</p>");
 	}
 %>
 		</div>

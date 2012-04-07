@@ -1,3 +1,8 @@
+<!--
+	CMPUT 391 Team 3
+	Authors: Colby Warkentin(1169034) and Yiming Liu (1245022)
+ 	Function: Let the user load more images for the given record
+-->
 <%@ page import="java.sql.*" %>
 <%
 	String title = "Upload Image";
@@ -7,6 +12,7 @@
 <%
 	String classType = (String) session.getAttribute("classtype");
 	if(session.getAttribute("name") != null && classType.equals("r")){
+		//If record_id is passed, allow user to attempt to upload image
     	if(request.getParameter("recid") != null){
     		String recid = request.getParameter("recid");
     		//Print result
@@ -38,14 +44,14 @@
 <%
     	}
     	else {
-    		out.println("Record ID not given");
+    		out.println("<p style=\"color:red\">Record ID not given</p>");
     	}
 	}
 	else if(session.getAttribute("name") != null){
-		out.println("You are not a radiologist. Get out of here!");
+		out.println("<p style=\"color:red\">You are not a radiologist. Get out of here!</p>");
 	}
 	else {
-		out.println("You are not signed in.");
+		out.println("<p style=\"color:red\">You are not signed in.</p>");
 	}
 %>
 		</div>

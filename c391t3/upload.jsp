@@ -1,3 +1,9 @@
+<!--
+	CMPUT 391 Team 3
+	Authors: Colby Warkentin(1169034) and Yiming Liu (1245022)
+ 	Function: Display table to add record or alternately
+ 		add an image to an existing record
+-->
 <%@ page import="java.sql.*" %>
 <%
 	String title = "Upload Record";
@@ -5,6 +11,7 @@
 <%@ include file="header.jsp" %>
 		<div id="main">
 <%
+	//If user is a radiologist, then display page
 	String classType = (String) session.getAttribute("classtype");
 	if(session.getAttribute("name") != null && classType.equals("r")){
 %>
@@ -65,10 +72,10 @@
 <%
 	}
 	else if(session.getAttribute("name") != null){
-		out.println("You are not a radiologist. Get out of here!");
+		out.println("<p style=\"color:red\">You are not a radiologist.</p>");
 	}
 	else {
-		out.println("You are not signed in.");
+		out.println("<p style=\"color:red\">You are not signed in.</p>");
 	}
 %>
 		</div>

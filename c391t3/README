@@ -1,0 +1,12 @@
+CMPUT 391 Team 3 Radiology Database
+Authors: Colby Warkentin(1169034) and Yiming Liu (1245022)
+
+User Documentation located in help.html.
+
+Quick Setup Guide (also coverered in help.html):
+	1. Move untarred project folder to your catalina webapps folder
+	2. Run "make" on the Makefile in the main project folder
+	3. Run "@dbFiles/setup.sql" in sqlplus
+	4. (Optional) run your own insert file or use "@dbFiles/insert.sql" to populate database
+	5. (Re)start your tomcat server
+	6. Login at (server location):(Port)/c391t3/login.html 

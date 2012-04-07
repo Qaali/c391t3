@@ -162,7 +162,7 @@
     		phone = (rset.getString(6)).trim();
 		}
 		
-		String sql2 = "select * from users where user_name = '"+usrName+"'";
+		String sql2 = "select password, class, to_char(date_registered, 'DD-MON-YYYY') as test_date from users where user_name = '"+usrName+"'";
 		
 		try{
     		stmt = conn.createStatement();
@@ -173,10 +173,9 @@
 		}
     	
     	while(rset != null && rset.next()){
-    		password = (rset.getString(2)).trim();
-    		classname = (rset.getString(3)).trim();
-    		date = (rset.getString(4)).trim();
-    		//date = (rset.getDate(4));
+    		password = (rset.getString(1)).trim();
+    		classname = (rset.getString(2)).trim();
+    		date = (rset.getString(3)).trim();
     	}
     	%>
 		<div id="main">

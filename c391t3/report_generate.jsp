@@ -45,8 +45,8 @@
     	//select the user table from the underlying db and validate the user name and password
 		PreparedStatement stmt = null;
     	ResultSet rset = null;
-		String sql = "select p.user_name, p.address, p.phone, r.record_id, r.test_date from radiology_record r,persons p where r.patient_name = p.user_name and diagnosis= 'a' and test_date BETWEEN '12-JUN-89' and '17-JUN-89' ORDER BY record_id asc";
-		sql =        "select p.user_name, p.address, p.phone, r.record_id, r.test_date from radiology_record r,persons p where r.patient_name = p.user_name and diagnosis = ? and test_date BETWEEN ? and ? ORDER BY record_id asc";
+		String sql = "select p.user_name, p.address, p.phone, r.record_id, to_char(r.test_date, 'DD-MON-YYYY') as test_date from radiology_record r,persons p where r.patient_name = p.user_name and diagnosis= 'a' and test_date BETWEEN '12-JUN-89' and '17-JUN-89' ORDER BY record_id asc";
+		sql =        "select p.user_name, p.address, p.phone, r.record_id, to_char(r.test_date, 'DD-MON-YYYY') as test_date from radiology_record r,persons p where r.patient_name = p.user_name and diagnosis = ? and test_date BETWEEN ? and ? ORDER BY record_id asc";
     	try{
     		stmt = conn.prepareStatement(sql);
     		stmt.setString(1, diagnosis);

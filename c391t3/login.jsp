@@ -36,7 +36,6 @@
 		        out.println("<hr>" + ex.getMessage() + "<hr>");
 	        }
 
-
 	        //select the user table from the underlying db and validate the user name and password
         	PreparedStatement stmt = null;
 	        ResultSet rset = null;

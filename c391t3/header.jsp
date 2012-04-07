@@ -64,7 +64,8 @@
 				else if(id.equals("r"))
 					out.println("<a href=\"upload.jsp\">Record Upload</a><br>");
 				out.println("<a href=\"search.jsp\">Search</a><br>");
-				out.println("<a href=\"profile.jsp\">Edit Profile</a>");
+				out.println("<a href=\"profile.jsp\">Edit Profile</a><br>");
+				out.println("<a href=\"help.html\">Help</a>");
 			}
 		%>
 		</div>

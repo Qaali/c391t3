@@ -70,7 +70,7 @@
 			out.println(usrName+"<input type=hidden name=name value="+usrName+">");
 			out.println("<input type=hidden name=classname value="+classname+">");
 			out.println("<input type=submit name=b1 value=view>");
-			out.println("<input type=submit name=b2 value=remove>");
+			//out.println("<input type=submit name=b2 value=remove>");
 			out.println("</form>");
 			out.println("</TH></TR>");
 		}

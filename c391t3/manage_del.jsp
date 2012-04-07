@@ -33,7 +33,7 @@
 			conn.setAutoCommit(false);
 		}
     	catch(Exception ex){
-        	out.println("<hr>" + ex.getMessage() + "<hr>");
+        	out.println("<p style=\"color:red\">" + ex.getMessage() + "</p>");
     	}
 
 		String doctor_name = request.getParameter("doctor_name");
@@ -54,12 +54,12 @@
 	        if(classname.equals("d")){
 				out.println("<form method=get action=manage2.jsp>");
 				out.println("<input type=hidden name=name value="+doctor_name+">");
-				out.println("<input type=submit value=Return>");
+				out.println("<input type=submit name=uSubmit value=Return>");
 				out.println("</form>");
 	        }else{
 				out.println("<form method=get action=manage2.jsp>");
 				out.println("<input type=hidden name=name value="+patient_name+">");
-				out.println("<input type=submit value=Return>");
+				out.println("<input type=submit name=uSubmit value=Return>");
 				out.println("</form>");
 	        }
 		}

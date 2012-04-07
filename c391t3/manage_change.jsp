@@ -1,22 +1,26 @@
+<!--
+	CMPUT 391 Team 3
+	Authors: Colby Warkentin(1169034) and Yiming Liu (1245022)
+ 	Function: Update User Information
+-->
 <%@ page import="java.sql.*" %>
 <%
-	String title = "Edit user info";
+	String title = "Edit User Info";
 %>
 <%@ include file="header.jsp" %>
 		<div id="main">
 <%
-	if(session.getAttribute("name") != null && request.getParameter("pSubmit") != null){
+	String classType = (String) session.getAttribute("classtype");
+	if(session.getAttribute("name") != null && request.getParameter("pSubmit") != null && classType.equals("a")){
     	//establish the connection to the underlying database
 		Connection conn = null;
-
     	String driverName = "oracle.jdbc.driver.OracleDriver";
     	String dbstring = "jdbc:oracle:thin:@gwynne.cs.ualberta.ca:1521:CRS";
-
     	try{
         	//load and register the driver
 			Class drvClass = Class.forName(driverName); 
     		DriverManager.registerDriver((Driver) drvClass.newInstance());
-    		//establish the connection 
+    		//Check for custom database signin
     		if(session.getAttribute("dbuser") != null){
     			String dbUser = (String) session.getAttribute("dbuser");
     			String dbPass = (String) session.getAttribute("dbpass");
@@ -27,7 +31,7 @@
 			conn.setAutoCommit(false);
 		}
     	catch(Exception ex){
-        	out.println("<hr>" + ex.getMessage() + "<hr>");
+        	out.println("<p style=\"color:red\">" + ex.getMessage() + "</p>");
     	}
 
     	String userName = request.getParameter("usrName");
@@ -53,12 +57,13 @@
     		stmt.setString(6, userName);
 	        stmt.executeUpdate();
 	        conn.commit();
-	        out.println("<p>Edit Success!</p>");
+	        out.println("<p style=\"color:green\">Edit Success!</p>");
 		}
     	catch(Exception ex){
-        	out.println("<hr>" + ex.getMessage() + "<hr>");
+        	out.println("<p style=\"color:red\">" + ex.getMessage() + "</p>");
 		}
     	
+    	//Update password
 		sql = "update users set password = ? where user_name = ? ";
 		try{
 			stmt = conn.prepareStatement(sql);
@@ -66,21 +71,24 @@
 			stmt.setString(2, userName);
 			stmt.executeUpdate();
 			conn.commit();
-			out.println("<p>Password Change Successful!</p>");
+			out.println("<p style=\"color:green\">Password Change Successful!</p>");
 		}
 		catch(Exception ex){
-			out.println("<hr>" + ex.getMessage() + "<hr>");
+			out.println("<p style=\"color:red\">" + ex.getMessage() + "</p>");
 		}
 
 		try{
         	conn.close();
      	}
         catch(Exception ex){
-       		out.println("<hr>" + ex.getMessage() + "<hr>");
+       		out.println("<p style=\"color:red\">" + ex.getMessage() + "</p>");
         }
 	}
-	else{
-		out.println("You are not signed in.");
+	else if(session.getAttribute("name") != null){
+		out.println("<p style=\"color:red\">You are not an admin.</p>");
+	}
+	else {
+		out.println("<p style=\"color:red\">You are not signed in.</p>");
 	}
 %>
 		</div>

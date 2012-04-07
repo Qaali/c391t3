@@ -15,7 +15,7 @@
 	String classType = (String) session.getAttribute("classtype");
 	if(session.getAttribute("name") != null && classType.equals("a")){
 		%>
-		<P>Get the number of images for each patient ,  test type, and/or period of time</P>
+		<P>Get the number of records for each patient, test type, and/or period of time</P>
 		
 		<FORM NAME="AnalysisForm" ACTION="analysis.jsp" METHOD="post" >
 		<TABLE>

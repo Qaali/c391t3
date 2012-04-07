@@ -1,0 +1,150 @@
+<!--
+	CMPUT 391 Team 3
+	Authors: Colby Warkentin(1169034) and Yiming Liu (1245022)
+ 	Function: User Documentation page
+-->
+<HTML>
+<HEAD>
+<TITLE>CMPUT 391 Team 3 Radiology Help Page</TITLE>
+</HEAD>
+
+<BODY>
+<a name="Top">
+<h1 style="text-align:center; margin-bottom:0px">Radiology Database - User Documentation</h1>
+<h3 style="text-align:center; margin-top:0px">CMPUT 391 Team 3 - Colby Warkentin, Yiming Liu</h3>
+
+<h3>Table of Contents:</h3>
+<ol>
+<li><a href="#Install">Installation Guide</a></li>
+<li><a href="#Login">Logging In</a></li>
+<li><a href="#Main">Main Page</a></li>
+<li><a href="#Edit">Edit Profile</a></li>
+<li><a href="#Search">Searching</a></li>
+
+<li><a href="#Admin">Administrator Modules</a></li>
+<ol style="list-style-type:lower-roman">
+<li><a href="#Manage">User Management</a></li>
+<li><a href="#Report">Report Generator</a></li>
+<li><a href="#Olap">Data Analysis (OLAP)</a></li>
+</ol>
+
+<li><a href="#Rad">Radiologist Modules</a></li>
+<ol style="list-style-type:lower-roman">
+<li><a href="#Record">Record Uploading</a></li>
+<li><a href="#Image">Image Uploading</a></li>
+</ol>
+</ol>
+<hr>
+<br><br>
+
+<a name="Install">
+<h4>Installation Guide:</h4></a>
+<ol>
+	<li>Move untarred project folder to your catalina webapps folder</li>
+	<li>Run "make" on the Makefile in the main project folder</li>
+	<li>Run "@dbFiles/setup.sql" in sqlplus</li>
+	<li>(Optional) run your own insert file or use "@dbFiles/insert.sql" to populate database</li>
+	<li>(Re)start your tomcat server</li>
+	<li>Login at (server location):(Port)/c391t3/login.html </li>
+</ol>
+<a href="#Top">Back To Top</a>
+
+<a name="Login">
+<h4>Logging In:</h4></a>
+<p>The login page allows a user to log in with a given userName and password.<br>
+Also, if the "Use a different Database" checkbox is checked, the user can <br>
+specify a specific database userName and password to log into a different database.<br></p>
+<a href="#Top">Back To Top</a>
+
+<a name="Main">
+<h4>Main Page:</h4></a>
+<p>The main page of our website contains a header that shows if a user is logged in and <br>
+a sidebar that contains links to every module that the user has permission to access.<br>
+You can also click the logout link in the header to log out of the website securely.<br> 
+In the next section we will talk about the areas of the website that everyone can access.<br></p>
+<a href="#Top">Back To Top</a>
+
+<a name="Edit">
+<h4>Edit Profile:</h4></a>
+<p>A user can choose to edit their profile by selecting the "Edit Profile" link in the sidebar<br>
+The edit profile page display the users current information for editing, as well as the <br>
+option to change their password. If the "Change Password" checkbox is checked, then the <br>
+user needs to enter their current password and a new password. If the old password is <br>
+incorrect, the password will not be changed, and the system will warn the user.<br></p>
+<a href="#Top">Back To Top</a>
+
+<a name="Search">
+<h4>Searching:</h4></a>
+<p>The search module allows the user to search through the records available to them using a <br>
+number to parameters:
+<ul>
+<li>Keywords: Display only the records that contain any element of the comma-separated keyword list</li>
+<li>Start Date: Only view records after this date</li>
+<li>End Date: Only view records before this date</li>
+<li>Order By: Order the results by rank, most-recent-first or most-recent-last</li>
+</ul>
+To order by rank, some keywords must be given. After the parameters are given, a table will be <br>
+displayed containing the results of your search. The table consists of all relevant record infomation<br>
+inlcuding any images that are associated with the record. The associated images are located in the <br>
+row after the record. The thumbnails of the images can be selected and the full image will display in<br>
+another window.</p>
+<a href="#Top">Back To Top</a>
+
+
+<a name="Admin">
+<h3>Administration Modules</h3></a>
+<p>These modules are only accessible by an administrator.</p>
+
+<a name="Manage">
+<h4>User Management:</h4></a>
+<p>Upon entering the User Management module, you can either create a new user, or modify an existing user.<br>
+If you choose to create a new user, you can enter their personal information, along with a username and <br>
+password. After creating a new user, the user is added to the list of existing users. Choosing to edit <br>
+an existing user will allow you to update their personal information, such as name, address, and password. <br>
+Also, if the user is a patient, you will get a list of family doctors for that patient, and be able to add <br>
+and remove doctors. If the user is a doctor, you will get a list of patients that the doctor oversees, and <br>
+be able to add and remove patients. This will affect which records the doctor can view.</p>
+<a href="#Top">Back To Top</a>
+
+
+<a name="Report">
+<h4>Report Generator:</h4></a>
+<p> The report generator allows an admin to view a list of patients that have been diagnosed with a certain <br>
+disease over a period of time. For this module to work, you must enter a diagnosis, start and end date, and <br>
+you will be warned if you do not. The report generator will then return a list of patients that fit the <br>
+criteria, including their name, address, phone number, and test date they were first diagnosed.</p>
+<a href="#Top">Back To Top</a>
+
+
+<a name="Olap">
+<h4>Data Analysis (OLAP):</h4></a>
+<p> The Data Analysis Module allows an admin to generate OLAP reports for data analysis. The admin has the <br>
+choice of grouping the data by patient, test_type, and/or time. The time can be drilled down from years to <br>
+months and weeks. After the admin has chosen at least one parameter, we display the OLAP data table. The table <br>
+contains the criteria you requested along with the number of records that fit the criteria.</p>
+<a href="#Top">Back To Top</a>
+
+
+<a name="Rad">
+<h3>Radiologist Modules</h3></a>
+<p>These modules are only accessible by a radiologist.</p>
+
+<a name="Record">
+<h4>Record Uploading:</h4></a>
+<p>From the Record Uploading module, you can add a new record by filling in the form. If the information is <br>
+valid, then the page will display the record id and allow you to add images to the newly created record.</p>
+<a href="#Top">Back To Top</a>
+
+
+<a name="Image">
+<h4>Image Uploading:</h4></a>
+<p>Either from the main record uploading page or after successfully adding an image or record, <br>
+you can upload an image associated with a record you created. If you are uploading from the base <br>
+Record Uploading module, you need to specify the record id and the image you want to add. You can <br>
+only add images to a record that you entered into the database. If you are uploading after a successful <br>
+upload, you do not need to reenter the record id, only the image to upload. Every image uploaded will <br>
+show up in the search results. </p>
+<a href="#Top">Back To Top</a>
+
+</BODY>
+</HTML>
